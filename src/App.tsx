@@ -5,7 +5,10 @@ import cards from "./data/cards.json"
 
 const App = () => {
   //  React state
-  const [gameCards, setGameCards] = useState<TCardList>(createGameCards())
+  const [gameCards, setGameCards] = useState<TCardList>(
+  shuffleCards(createGameCards())
+)
+
 
 
   //  Called when a card is clicked. It flips exactly that card.
@@ -43,5 +46,9 @@ const createGameCards = (): TCardList => {
   return pairs
 }
 
+const shuffleCards = (arr: TCardList): TCardList => {
+  
+  return [...arr].sort(() => Math.random() - 0.5)
+}
 
 export default App
