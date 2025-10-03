@@ -1,54 +1,94 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import CardComp from "./components/CardComp"
 import type { TCard, TCardList } from "./types/card.types"
 import cards from "./data/cards.json"
 
-const App = () => {
-  //  React state
+// For building pairs
+const createGameCards = (): TCardList => {
+  const pairs = (cards as TCard[]).flatMap((card) => [
+    { ...card, id: card.id },
+    { ...card, id: card.id + 100 }, // we use unique id for the duuplicates
+  ])
+  return pairs
+}
+
+// For Shuffle helper
+const shuffleCards = (arr: TCardList): TCardList => {
+  return [...arr].sort(() => Math.random() - 0.5)
+}
+
+export default function App() {
+  // For the Cards on the board
   const [gameCards, setGameCards] = useState<TCardList>(
-  shuffleCards(createGameCards())
-)
+    shuffleCards(createGameCards())
+  )
 
+  // For the Names of the two cards currently flipped (unresolved turn)
+  //    Type is "name" of TCard so only valid hero names are allowed
+  const [flippedCards, setFlippedCards] = useState<TCard["name"][]>([])
 
-
-  //  Called when a card is clicked. It flips exactly that card.
+  // flip, collect name, but respect limits
   const handleCardClick = (clickedCard: TCard) => {
-    
-    setGameCards(prev =>
-      prev.map(card =>
-        card.id === clickedCard.id
-          ? { ...card, flipped: !card.flipped } 
-          : card
+    // do not allow selecting already matched cards
+    if (clickedCard.matched) return
+
+    // limit to two selections per turn
+    if (flippedCards.length === 2) return
+
+    // avoid re-clicking the same face-up card
+    if (clickedCard.flipped) return
+
+    // flip the clicked card
+    setGameCards((prev) =>
+      prev.map((card) =>
+        card.id === clickedCard.id ? { ...card, flipped: !card.flipped } : card
       )
     )
+
+    // collect the card "name" for the turn (we'll compare these two)
+    setFlippedCards((prev) => [...prev, clickedCard.name])
   }
+
+  // When two names are collected = resolve the turn
+  useEffect(() => {
+    if (flippedCards.length === 2) {
+      const [firstName, secondName] = flippedCards
+
+      if (firstName === secondName) {
+        // MATCH = mark both copies as matched, keep them face-up
+        setGameCards((prev) =>
+          prev.map((card) =>
+            card.name === firstName ? { ...card, matched: true } : card
+          )
+        )
+        setFlippedCards([]) // clear turn, allow next two clicks
+      } else {
+        // NO MATCH = flip those two back after a short delay
+        const t = setTimeout(() => {
+          setGameCards((prev) =>
+            prev.map((card) =>
+              card.name === firstName || card.name === secondName
+                ? { ...card, flipped: false }
+                : card
+            )
+          )
+          setFlippedCards([]) // clear turn
+        }, 800)
+
+        return () => clearTimeout(t)
+      }
+    }
+  }, [flippedCards])
 
   return (
     <div className="main_section">
       <h1>Memory Game</h1>
 
       <div className="card_container">
-        {gameCards.map((card: TCard) => (
-          // We now pass the real click handler (not an empty fn)
+        {gameCards.map((card) => (
           <CardComp key={card.id} card={card} clickProp={handleCardClick} />
         ))}
       </div>
     </div>
   )
 }
-
-// Create pairs of cards (id + id+100 so React keys stay unique)
-const createGameCards = (): TCardList => {
-  const pairs = (cards as TCard[]).flatMap((card) => [
-    { ...card, id: card.id },          // first copy
-    { ...card, id: card.id + 100 },    // second copy (unique id)
-  ])
-  return pairs
-}
-
-const shuffleCards = (arr: TCardList): TCardList => {
-  
-  return [...arr].sort(() => Math.random() - 0.5)
-}
-
-export default App
