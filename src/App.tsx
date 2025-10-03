@@ -5,7 +5,8 @@ import cards from "./data/cards.json"
 
 const App = () => {
   //  React state
-  const [gameCards, setGameCards] = useState<TCardList>(cards as TCardList)
+  const [gameCards, setGameCards] = useState<TCardList>(createGameCards())
+
 
   //  Called when a card is clicked. It flips exactly that card.
   const handleCardClick = (clickedCard: TCard) => {
@@ -32,5 +33,15 @@ const App = () => {
     </div>
   )
 }
+
+// Create pairs of cards (id + id+100 so React keys stay unique)
+const createGameCards = (): TCardList => {
+  const pairs = (cards as TCard[]).flatMap((card) => [
+    { ...card, id: card.id },          // first copy
+    { ...card, id: card.id + 100 },    // second copy (unique id)
+  ])
+  return pairs
+}
+
 
 export default App
