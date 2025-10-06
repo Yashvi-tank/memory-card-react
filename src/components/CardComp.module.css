@@ -56,3 +56,13 @@
 .card.animate__rotate>span {
     opacity: 0;
 }
+
+/* When flipped, rotate to show the image and fade the pink layer */
+.animate__rotate {                        
+  transform: rotateY(0);
+}
+.card.animate__rotate::before { opacity: 0; }
+
+
+.card:hover { box-shadow: 0 4px 8px rgba(0,0,0,.15); }
+.card.animate__rotate:hover { box-shadow: 0 0 0 0 var(--secondary); }
