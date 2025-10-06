@@ -1,62 +1,50 @@
 .final_result {
-    position: absolute;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    backdrop-filter: blur(2px);
-    visibility: hidden;
-    inset: 0;
-    z-index: 10;
-}
-
-.final_result::before {
-    position: fixed;
-    width: 100dvw;
-    height: 100dvh;
-    inset: 0;
-    background-color: #d5d0d096;
-    content: "";
-    z-index: -1;
-    pointer-events: none;
-}
-
-.final_result .final_btn {
-    position: absolute;
-    top: 26%;
-    right: 10%;
-    border-radius: 50%;
-    padding: 0.5em 0.7em;
-    border: 2px solid var(--secondary);
-    cursor: pointer;
-    z-index: 10;
-}
-
-.restart_btn {
-    border: none;
-    background: var(--secondary);
-    color: white;
-    padding: 0.5em 2em;
-    display: block;
-    margin: 0.5em auto;
-    cursor: pointer;
-    visibility: hidden;
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(2, 6, 23, 0.7);
+  z-index: 50;
 }
 
 .final_container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    padding: 1em 1.5em;
-    background-color: white;
+  background: linear-gradient(180deg, #0f172a, #0b1220);
+  padding: 28px 32px;
+  border-radius: 16px;
+  min-width: 300px;
+  max-width: 92vw;
+  text-align: center;
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255,255,255,.06);
+  color: #e5e7eb;
 }
 
-.final_container>h2 {
-    font-size: 5em;
-    margin: 0.125em 0;
-    line-height: 1;
+.final_btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: #111827;
+  color: #e5e7eb;
+  border: 1px solid rgba(255,255,255,.10);
+  border-radius: 10px;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-size: 18px;
 }
 
-.final_container span {
-    font-size: 2em;
+.final_title {
+  margin: 0 0 10px 0;
+  font-weight: 700;
+}
+
+.final_icon {
+  display: inline-block;
+  font-size: 44px;
+  margin: 10px 0 18px 0;
+}
+
+.final_text {
+  display: inline-block;
+  color: var(--accent-2);
+  cursor: pointer;
+  user-select: none;
 }
